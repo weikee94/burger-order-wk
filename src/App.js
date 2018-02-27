@@ -29,25 +29,39 @@ class App extends Component {
     this.setState({ showPersons: !doesShow });
   };
 
+  deletePersonHandler = personIndex => {
+    // create copy,change that then update that with set state
+    // better approach, update state without mutating original state
+    // const persons = this.state.persons.slice(); solution 1
+    const persons = [...this.state.persons]; // solution 2
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
+  };
+
   render() {
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return (
+              <Person
+                click={() => this.deletePersonHandler(index)}
+                name={person.name}
+                age={person.age}
+              />
+            );
+          })}
+        </div>
+      );
+    }
+
     return (
       <div className="App">
         <h1>Hello World!</h1>
         <button onClick={this.togglePersonHandler}>ToggleName</button>
-        {this.state.showPersons ? (
-          <div>
-            <Person
-              name={this.state.persons[0].name}
-              age={this.state.persons[0].age}
-            />
-            <Person
-              name={this.state.persons[1].name}
-              age={this.state.persons[1].age}
-              click={this.switchNameHandler}
-              changed={this.nameChangedHandler}
-            />
-          </div>
-        ) : null}
+        {persons}
       </div>
     );
   }
